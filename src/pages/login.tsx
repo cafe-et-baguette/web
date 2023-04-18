@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { SyntheticEvent } from 'react';
-import axios from 'axios';
-
+import axios from './api/axios';
 function Login() {
 	const [email, setEmail] = React.useState('');
 	const [password, setPassword] = React.useState('');
@@ -11,11 +10,7 @@ function Login() {
 	const handleSubmit = async (e: SyntheticEvent) => {
 		e.preventDefault();
 		try {
-			await axios.post(
-				'http://localhost:8000/auth/login',
-				{ email, password },
-				{ withCredentials: true }
-			);
+			await axios.post('/auth/login', { email, password });
 
 			router.push('/');
 		} catch (error) {
