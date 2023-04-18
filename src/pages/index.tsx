@@ -1,20 +1,14 @@
 import Image from 'next/image';
 import { Inter } from 'next/font/google';
 import { useEffect } from 'react';
-import axios from 'axios';
-
+import axios from './api/axios';
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
 	useEffect(() => {
 		(async () => {
 			try {
-				const response = await axios.get(
-					'http://localhost:8000/auth/user',
-					{
-						withCredentials: true,
-					}
-				);
+				const response = await axios.get('/auth/user');
 
 				const data = response.data;
 

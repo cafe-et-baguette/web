@@ -1,7 +1,7 @@
 import React, { SyntheticEvent } from 'react';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import axios from 'axios';
+import axios from './api/axios';
 
 function Register() {
 	const [name, setName] = useState('');
@@ -14,7 +14,7 @@ function Register() {
 		e.preventDefault();
 
 		try {
-			await axios.post('http://localhost:8000/auth/register', {
+			await axios.post('/auth/register', {
 				name,
 				email,
 				password,
