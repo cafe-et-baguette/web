@@ -1,6 +1,9 @@
 # Cafe et Baguette Web
 This is a [Next.js](https://nextjs.org/) project.
 
+## Configuration
+Specify environment by copying `env.sample` to `.env.local`
+
 ## Development
 
 ```bash
