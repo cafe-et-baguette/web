@@ -2,7 +2,7 @@ import { useAuth } from "@/context/AuthContext";
 import { User, userFromId } from "@/utils/auth.services";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Socket, io } from "socket.io-client";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
@@ -35,13 +35,22 @@ const ChatRoom = () => {
   // Messages
   const [messages, setMessages] = useState<Message[]>([]);
 
+  // Scroll to bottom
+  const messageEnd = useRef<null | HTMLDivElement>(null);
+  const scrollToBottom = () => {
+    messageEnd.current?.scrollIntoView({ behavior: "smooth" });
+  };
+  useEffect(scrollToBottom, [messages]);
+
   const connectSocket = () => {
     socket = io(BACKEND_URL);
     socket.on("connect", () => console.log(`Connected to ${BACKEND_URL}`));
   };
 
+  // Socket connection when first page load
   useEffect(connectSocket, []);
 
+  // Handle messaging
   useEffect(() => {
     if (roomId) {
       // Get previous messages
@@ -76,7 +85,7 @@ const ChatRoom = () => {
         if (receivedMessage.roomId === roomId) {
           setMessages(
             messages.concat({
-              user: receivedMessage.user as User,
+              user: receivedMessage.userId as User,
               roomId: receivedMessage.roomId,
               content: receivedMessage.content,
               createdDate: new Date(receivedMessage.createdDate),
@@ -124,10 +133,7 @@ const ChatRoom = () => {
                           {message.createdDate?.toLocaleTimeString("en-GB")}
                         </div>
                       </div>
-                      <div
-                        key={idx}
-                        className="px-4 py-3 bg-blue-300 rounded-xl"
-                      >
+                      <div className="px-4 py-3 bg-blue-300 rounded-xl">
                         <div className=" text-gray-900 text-sm font-semibold">
                           {message.content}
                         </div>
@@ -135,6 +141,7 @@ const ChatRoom = () => {
                     </div>
                   );
                 })}
+                <div className="float-left clear-both" ref={messageEnd}></div>
               </div>
               <div className="relative bg-gray-200 shadow-lg sm:rounded-2xl h-1/5 mt-2 p-3">
                 <form onSubmit={handleSubmit} className="flex flex-row">
