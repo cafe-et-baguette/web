@@ -99,26 +99,30 @@ const ChatRoom = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-3 flex flex-col justify-center">
-      {/* <div className="absolute inset-0 bg-gradient-to-r from-sky-300 to-rose-300 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-2xl"></div> */}
+    <div className="min-h-screen bg-gradient-to-r from-sky-300 to-rose-300 py-3 flex flex-col justify-center">
+      {/* <div className="absolute inset-0 bg-gradient-to-r from-sky-300 to-rose-300 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-3 sm:rounded-2xl"></div> */}
       <div className="relative px-4 bg-white shadow-lg sm:rounded-3xl sm:p-10 ">
-        <div className="flex flex-col w-auto border-4 border-yellow-500">
+        <div className="flex flex-col w-auto ">
           <div className="text-center">
             <h1 className=" text-gray-900 text-2xl font-semibold">Chat Room</h1>
-            <h1 className=" text-gray-900 text-sm font-semibold">Room ID</h1>
+            <h1 className=" text-gray-900 text-sm font-semibold">
+              Room ID: xxxxx
+            </h1>
           </div>
           <div className="flex flex-row w-auto ">
             <div className="w-full h-full ">
-              <div className="bg-gray-100 shadow-lg sm:rounded-2xl sm:px-5 py-3 space-y-3 overflow-y-auto h-96 mt-1">
+              <div className="bg-gray-200 shadow-lg sm:rounded-2xl sm:px-5 py-3 space-y-3 overflow-y-auto h-96 mt-1">
                 {messages.map((message, idx) => {
                   return (
                     <div key={idx}>
-                      <div className=" text-gray-700 text-sm font-semibold">
-                        {message.user.name} &lt;
-                        {message.user.email}&gt;
-                      </div>
-                      <div className=" text-gray-400 text-sm font-semibold">
-                        {message.createdDate?.toISOString()}
+                      <div className="flex flex-row w-auto">
+                        <div className=" text-gray-700 text-sm font-semibold">
+                          {message.user.name} &lt;
+                          {message.user.email}&gt;
+                        </div>
+                        <div className=" text-gray-400 text-sm font-semibold">
+                          {message.createdDate?.toLocaleTimeString("en-GB")}
+                        </div>
                       </div>
                       <div
                         key={idx}
@@ -132,7 +136,7 @@ const ChatRoom = () => {
                   );
                 })}
               </div>
-              <div className="relative bg-gray-100 shadow-lg sm:rounded-2xl h-1/5 mt-2 p-3">
+              <div className="relative bg-gray-200 shadow-lg sm:rounded-2xl h-1/5 mt-2 p-3">
                 <form onSubmit={handleSubmit} className="flex flex-row">
                   <input
                     id="message"
@@ -150,10 +154,19 @@ const ChatRoom = () => {
                 </form>
               </div>
             </div>
-            <div className="relative bg-gray-100 sm:rounded-2xl p-5 ml-1">
+            <div className="relative bg-gray-200 sm:rounded-2xl p-5 ml-1">
+              <div>
+                <h1 className=" text-gray-900 text-xl font-semibold">
+                  List of users in chat:
+                </h1>
+              </div>
               {users.map((user) => {
                 return (
-                  <div key={user._id}>
+                  <div
+                    key={user._id}
+                    className="flex flex-row bg-gray-300 mt-1 p-2"
+                  >
+                    {/* <div className="rounded-full bg-pink-300 w-3 h-3 m-2"></div> */}
                     {user.name}&lt;{user.email}&gt;
                   </div>
                 );
