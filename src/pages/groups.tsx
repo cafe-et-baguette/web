@@ -1,4 +1,4 @@
-function Join() {
+function Groups() {
   return (
     <div className="flex flex-col">
       <div className="flex flex-row relative h-14 bg-gradient-to-r from-sky-300 to-rose-300 shadow-lg items-center ">
@@ -30,4 +30,4 @@ function Join() {
     </div>
   );
 }
-export default Join;
+export default Groups;
