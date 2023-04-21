@@ -5,6 +5,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
   : "";
 
 export type User = {
+  _id: string;
   name: string;
   email: string;
 };

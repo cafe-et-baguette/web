@@ -30,6 +30,8 @@ const ChatRoom = () => {
 
   const [content, setContent] = useState<string>("");
 
+  const [users, setUsers] = useState<User[]>([]);
+
   // Messages
   const [messages, setMessages] = useState<Message[]>([]);
 
@@ -60,6 +62,10 @@ const ChatRoom = () => {
             setMessages(previousMessages);
           });
         });
+
+      axios.get(`${BACKEND_URL}/chatroom/${roomId}/users`).then(({ data }) => {
+        setUsers(data.map((user: User) => user as User));
+      });
 
       while (!socket) {
         connectSocket();
@@ -101,21 +107,26 @@ const ChatRoom = () => {
             <h1 className=" text-gray-900 text-2xl font-semibold">Chat Room</h1>
             <h1 className=" text-gray-900 text-sm font-semibold">Room ID</h1>
           </div>
-          <div className="flex flex-row w-auto border-4 border-red-500">
-            <div className="w-full h-full border-4 border-green-500">
+          <div className="flex flex-row w-auto ">
+            <div className="w-full h-full ">
               <div className="bg-gray-100 shadow-lg sm:rounded-2xl sm:px-5 py-3 space-y-3 overflow-y-auto h-96 mt-1">
                 {messages.map((message, idx) => {
                   return (
-                    <div key={idx} className="px-4 py-2 bg-gray-300 rounded-xl">
-                      <div className=" text-gray-900 text-sm font-semibold">
-                        From: {message.user.name} &lt;
+                    <div key={idx}>
+                      <div className=" text-gray-700 text-sm font-semibold">
+                        {message.user.name} &lt;
                         {message.user.email}&gt;
                       </div>
-                      <div className=" text-gray-900 text-sm font-semibold">
-                        Message: {message.content}
+                      <div className=" text-gray-400 text-sm font-semibold">
+                        {message.createdDate?.toISOString()}
                       </div>
-                      <div className=" text-gray-900 text-sm font-semibold">
-                        Time: {message.createdDate?.toISOString()}
+                      <div
+                        key={idx}
+                        className="px-4 py-3 bg-blue-300 rounded-xl"
+                      >
+                        <div className=" text-gray-900 text-sm font-semibold">
+                          {message.content}
+                        </div>
                       </div>
                     </div>
                   );
@@ -139,8 +150,14 @@ const ChatRoom = () => {
                 </form>
               </div>
             </div>
-            <div className="relative bg-gray-100 sm:rounded-2xl sm:p-20 ml-1">
-              <h1> ABC </h1>
+            <div className="relative bg-gray-100 sm:rounded-2xl p-5 ml-1">
+              {users.map((user) => {
+                return (
+                  <div key={user._id}>
+                    {user.name}&lt;{user.email}&gt;
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
