@@ -2,7 +2,7 @@ import { useAuth } from "@/context/AuthContext";
 import { User, userFromId } from "@/utils/auth.services";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useEffect, useState, React } from "react";
+import { useEffect, useState } from "react";
 import { Socket, io } from "socket.io-client";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
