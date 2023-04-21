@@ -10,7 +10,8 @@ function Login() {
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     try {
-      await axios.post("/auth/login", { email, password });
+      const res = await axios.post("/auth/login", { email, password });
+      console.log(res);
 
       router.push("/");
     } catch (error) {
