@@ -2,7 +2,7 @@ import { useAuth } from "@/context/AuthContext";
 import { User, userFromId } from "@/utils/auth.services";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Socket, io } from "socket.io-client";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
@@ -35,13 +35,22 @@ const ChatRoom = () => {
   // Messages
   const [messages, setMessages] = useState<Message[]>([]);
 
+  // Scroll to bottom
+  const messageEnd = useRef<null | HTMLDivElement>(null);
+  const scrollToBottom = () => {
+    messageEnd.current?.scrollIntoView({ behavior: "smooth" });
+  };
+  useEffect(scrollToBottom, [messages]);
+
   const connectSocket = () => {
     socket = io(BACKEND_URL);
     socket.on("connect", () => console.log(`Connected to ${BACKEND_URL}`));
   };
 
+  // Socket connection when first page load
   useEffect(connectSocket, []);
 
+  // Handle messaging
   useEffect(() => {
     if (roomId) {
       // Get previous messages
@@ -76,7 +85,7 @@ const ChatRoom = () => {
         if (receivedMessage.roomId === roomId) {
           setMessages(
             messages.concat({
-              user: receivedMessage.user as User,
+              user: receivedMessage.userId as User,
               roomId: receivedMessage.roomId,
               content: receivedMessage.content,
               createdDate: new Date(receivedMessage.createdDate),
@@ -102,7 +111,7 @@ const ChatRoom = () => {
     <div className="min-h-screen bg-gray-100 py-3 flex flex-col justify-center">
       {/* <div className="absolute inset-0 bg-gradient-to-r from-sky-300 to-rose-300 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-2xl"></div> */}
       <div className="relative px-4 bg-white shadow-lg sm:rounded-3xl sm:p-10 ">
-        <div className="flex flex-col w-auto border-4 border-yellow-500">
+        <div className="flex flex-col w-auto ">
           <div className="text-center">
             <h1 className=" text-gray-900 text-2xl font-semibold">Chat Room</h1>
             <h1 className=" text-gray-900 text-sm font-semibold">Room ID</h1>
@@ -120,10 +129,7 @@ const ChatRoom = () => {
                       <div className=" text-gray-400 text-sm font-semibold">
                         {message.createdDate?.toISOString()}
                       </div>
-                      <div
-                        key={idx}
-                        className="px-4 py-3 bg-blue-300 rounded-xl"
-                      >
+                      <div className="px-4 py-3 bg-blue-300 rounded-xl">
                         <div className=" text-gray-900 text-sm font-semibold">
                           {message.content}
                         </div>
@@ -131,6 +137,7 @@ const ChatRoom = () => {
                     </div>
                   );
                 })}
+                <div className="float-left clear-both" ref={messageEnd}></div>
               </div>
               <div className="relative bg-gray-100 shadow-lg sm:rounded-2xl h-1/5 mt-2 p-3">
                 <form onSubmit={handleSubmit} className="flex flex-row">
