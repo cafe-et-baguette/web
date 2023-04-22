@@ -140,13 +140,13 @@ const ChatRoom = () => {
                           {message.user.name} &lt;
                           {message.user.email}&gt;
                         </div>
-                        <div className=" text-gray-400 text-sm font-semibold">
-                          {message.createdDate?.toLocaleTimeString("en-GB")}
-                        </div>
                       </div>
-                      <div className="px-4 py-3 bg-blue-300 rounded-xl">
+                      <div className="px-4 py-3 bg-blue-200  rounded-xl flex flex-row w-auto">
                         <div className=" text-gray-900 text-sm font-semibold">
                           {message.content}
+                        </div>
+                        <div className=" text-gray-400 text-sm font-semibold ml-auto">
+                          {message.createdDate?.toLocaleTimeString("en-GB")}
                         </div>
                       </div>
                     </div>
