@@ -1,4 +1,9 @@
+import { useRouter } from "next/router";
+import React, { SyntheticEvent } from "react";
+
 function Join() {
+  const router = useRouter();
+
   return (
     <div className="flex flex-col ">
       <div className="flex flex-row relative h-14 bg-gradient-to-r from-sky-300 to-rose-300 shadow-lg items-center ">
@@ -6,7 +11,10 @@ function Join() {
         <button className=" text-gray-600 rounded-md ml-1 text-base">
           Edit
         </button>
-        <button className="bg-white text-gray-900 rounded-md px-8 py-1 ml-auto text-xl mr-2">
+        <button className="bg-white text-gray-900 rounded-md px-8 py-1 text-xl ml-auto mr-3">
+          My Chats
+        </button>
+        <button className="bg-white text-gray-900 rounded-md px-8 py-1 text-xl mr-2">
           Logout
         </button>
       </div>
