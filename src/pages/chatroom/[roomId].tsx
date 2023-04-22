@@ -113,8 +113,19 @@ const ChatRoom = () => {
       <div className="relative px-4 bg-white shadow-lg sm:rounded-3xl sm:p-10 ">
         <div className="flex flex-col w-auto ">
           <div className="text-center">
-            <h1 className=" text-gray-900 text-2xl font-semibold">Chat Room</h1>
-            <h1 className=" text-gray-900 text-sm font-semibold">
+            <div className="flex flex-row">
+              <div className="w-11/12">
+                <h1 className=" text-gray-900 text-2xl font-semibold">
+                  Chat Room
+                </h1>
+              </div>
+              <div className="w-1/12">
+                <button className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-8 py-1">
+                  Search
+                </button>
+              </div>
+            </div>
+            <h1 className=" text-gray-900 text-sm font-semibold w-11/12">
               Room ID: xxxxx
             </h1>
           </div>
