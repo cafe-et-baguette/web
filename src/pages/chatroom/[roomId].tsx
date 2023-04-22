@@ -125,7 +125,7 @@ const ChatRoom = () => {
                 </h1>
               </div>
               <div className="w-1/12">
-                <button className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-8 py-1">
+                <button onClick={()=>{router.push("/search")}} className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-8 py-1">
                   Search
                 </button>
               </div>
