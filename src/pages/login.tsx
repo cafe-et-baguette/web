@@ -13,7 +13,7 @@ function Login() {
       const res = await axios.post("/auth/login", { email, password });
       console.log(res);
 
-      router.push("/");
+      router.push("/join");
     } catch (error) {
       console.log(error);
     }
