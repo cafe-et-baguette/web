@@ -20,8 +20,16 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
-      <div className="relative py-3 sm:max-w-xl sm:mx-auto">
+    <div className="flex flex-col">
+      <div className="flex flex-row relative h-14 bg-gradient-to-r from-sky-300 to-rose-300 shadow-lg items-center ">
+        <button className="bg-white text-gray-900 rounded-md px-11 py-1 ml-auto text-xl mr-2">
+          Login
+        </button>
+        <button className="bg-white text-gray-900 rounded-md px-8 py-1 text-xl mr-2">
+          Register
+        </button>
+      </div>
+      <div className="relative py-3 sm:max-w-xl sm:mx-auto mt-36">
         <div className="absolute inset-0 bg-gradient-to-r from-sky-300 to-rose-300 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <form
           onSubmit={handleSubmit}
