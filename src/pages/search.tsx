@@ -50,3 +50,11 @@ function Search() {
   );
 }
 export default Search;
+function useState<T>(): [any, any] {
+  throw new Error("Function not implemented.");
+}
+
+function useEffect(arg0: () => void, arg1: never[]) {
+  throw new Error("Function not implemented.");
+}
+

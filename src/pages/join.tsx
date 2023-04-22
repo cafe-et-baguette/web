@@ -1,9 +1,41 @@
+import axios from "axios";
 import { useRouter } from "next/router";
-import React, { SyntheticEvent } from "react";
+import React, { SyntheticEvent, useEffect, useState } from "react";
 
+interface ChatRoom {
+  _id: string;
+  name: string;
+  userIds: string[];
+  messages: any[]; // update this with the type for your messages
+}
+interface user {
+  _id: string;
+  name: string;
+  email: string;
+  __v: number;
+}
 function Join() {
   const router = useRouter();
-
+  const handleLogout = async (e: SyntheticEvent) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("/auth/logout");
+      router.push("/login");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const [chatRooms, setChatRooms] = useState<ChatRoom[]>();
+  const [users, setUsers] = useState<user>();
+  useEffect(() => {
+    const fetchChats = async () => {
+      const chatRoomsResult = await axios.get("/chatroom")
+      setChatRooms(chatRoomsResult.data);
+      const usersResult = await axios.get("/auth/user")
+      setUsers(usersResult.data)
+    }
+    fetchChats()
+  }, []);
   return (
     <div className="flex flex-col ">
       <div className="flex flex-row relative h-14 bg-gradient-to-r from-sky-300 to-rose-300 shadow-lg items-center ">
@@ -11,10 +43,10 @@ function Join() {
         <button className=" text-gray-600 rounded-md ml-1 text-base">
           Edit
         </button>
-        <button className="bg-white text-gray-900 rounded-md px-8 py-1 text-xl ml-auto mr-3" onClick={()=>router.push("/groups")}>
+        <button className="bg-white text-gray-900 rounded-md px-8 py-1 text-xl ml-auto mr-3" onClick={() => router.push("/groups")}>
           My Chats
         </button>
-        <button className="bg-white text-gray-900 rounded-md px-8 py-1 text-xl mr-2">
+        <button onClick={handleLogout} className="bg-white text-gray-900 rounded-md px-8 py-1 text-xl mr-2">
           Logout
         </button>
       </div>
@@ -29,12 +61,16 @@ function Join() {
               </div>
             </div>
             <div className="h-80 overflow-y-auto">
-              <div className="flex flex-row items-center bg-white sm:px-5 py-3 space-y-3 m-1">
-                Group 1
-                <button className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-8 py-1 ml-auto">
-                  Join
-                </button>
-              </div>
+              {chatRooms && chatRooms.map((chatRoom) => (
+                <>
+                  <div className="flex flex-row items-center bg-white sm:px-5 py-3 space-y-3 m-1">{chatRoom.name}
+                    <button key={chatRoom._id} onClick={() => router.push(`/chatroom/${chatRoom._id}`)}
+                      className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-8 py-1 ml-auto">
+                      Chat &gt;
+                    </button>
+                  </div>
+                </>
+              ))}
             </div>
           </div>
         </div>
@@ -43,14 +79,6 @@ function Join() {
             <div>
               <div className="text-center">
                 <h1 className=" text-gray-900 text-2xl font-semibold">Chats</h1>
-              </div>
-            </div>
-            <div className="h-80 overflow-y-auto">
-              <div className="flex flex-row items-center bg-white sm:px-5 py-3 space-y-3 m-1">
-                Chat 1
-                <button className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-8 py-1 ml-auto">
-                  Join
-                </button>
               </div>
             </div>
           </div>
