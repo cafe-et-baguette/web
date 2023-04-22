@@ -64,5 +64,6 @@ function Join() {
 			</div>
 		</div>
 	);
+
 }
 export default Join;

@@ -13,11 +13,13 @@ function Login() {
 			const res = await axios.post('/auth/login', { email, password });
 			console.log(res);
 
+
 			router.push('/');
 		} catch (error) {
 			console.log(error);
 		}
 	};
+
 
 	return (
 		<div className="flex flex-col">
