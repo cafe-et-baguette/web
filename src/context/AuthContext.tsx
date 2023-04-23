@@ -4,13 +4,13 @@ import axios from '@/pages/api/axios';
 interface AuthContextState {
 	auth: {
 		_id: string;
-		username: string;
+		name: string;
 		email: string;
 	} | null;
 	setAuth: (
 		auth: {
 			_id: string;
-			username: string;
+			name: string;
 			email: string;
 		} | null
 	) => void;
@@ -22,7 +22,7 @@ AuthContext.displayName = 'AuthContext';
 function AuthContextProvider({ children }: { children: React.ReactNode }) {
 	const [auth, setAuth] = useState<{
 		_id: string;
-		username: string;
+		name: string;
 		email: string;
 	} | null>(null);
 
@@ -34,7 +34,7 @@ function AuthContextProvider({ children }: { children: React.ReactNode }) {
 				const data = response.data;
 				setAuth({
 					_id: data._id,
-					username: data.username,
+					name: data.name,
 					email: data.email,
 				});
 				console.log(data);
