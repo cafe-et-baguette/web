@@ -34,7 +34,7 @@ function Create() {
         name,
         emails,
       });
-      router.push(`/chatroom/${res.data._id}`);
+      router.push(`/join`);
     } catch (error) {
       console.log(error);
     }
@@ -76,13 +76,11 @@ function Create() {
                     Room name
                   </label>
                 </div>
-                {emails.map((email) => {
-                  return <div key={email}>{email}</div>;
-                })}
 
                 <div className="relative">
                   <input
                     name="invite"
+                    placeholder="User email to invite"
                     className="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
                     value={currentEmail}
                     onChange={(e) => setCurrentEmail(e.target.value)}
@@ -90,16 +88,42 @@ function Create() {
                   <label className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">
                     User email to invite
                   </label>
-                  <button onClick={handleAddEmailButton}>Add Email</button>
+                  <button
+                    className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-2 py-1 mt-2 w-28"
+                    onClick={handleAddEmailButton}
+                  >
+                    Add Email
+                  </button>
+                  <div className="flex flex-auto">
+                    {emails.map((email) => {
+                      return (
+                        <div
+                          key={email}
+                          className="bg-gray-200 text-gray-900 rounded-md px-2 py-1 mr-1 mt-1 w-fit text-base"
+                        >
+                          {email}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 <div className="relative">
-                  <button
-                    className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-2 py-1"
-                    onClick={handleCreateButton}
-                  >
-                    Create
-                  </button>
+                  <div className="flex flex-row">
+                    <button
+                      className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-2 py-1 w-36"
+                      onClick={() => router.back()}
+                    >
+                      Back
+                    </button>
+
+                    <button
+                      className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-2 py-1 ml-auto w-36"
+                      onClick={handleCreateButton}
+                    >
+                      Create
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
