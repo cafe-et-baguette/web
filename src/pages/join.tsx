@@ -76,10 +76,16 @@ function Join() {
           Edit
         </button>
         <button
-          className="bg-white text-gray-900 rounded-md px-8 py-1 text-xl ml-auto mr-3"
+          className="bg-white text-gray-900 rounded-md px-8 py-1 text-xl ml-auto mr-2"
           onClick={() => router.push("/groups")}
         >
           My Chats
+        </button>
+        <button
+          className="bg-white text-gray-900 rounded-md px-8 py-1 text-xl mr-2"
+          onClick={() => router.push("/create")}
+        >
+          + Create
         </button>
         <button
           onClick={handleLogout}

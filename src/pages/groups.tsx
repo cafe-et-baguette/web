@@ -42,9 +42,17 @@ function Groups() {
           <div className="bg-gray-200 sm:rounded-2xl sm:px-5 py-3 h-96 divide-y-2 divide-gray-400">
             <div>
               <div className="text-center">
-                <h1 className=" text-gray-900 text-2xl font-semibold">
-                  My Chats
-                </h1>
+                <div className="flex flex-row w-1/2 mb-2">
+                  <button
+                    onClick={() => router.back()}
+                    className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-10 py-1 ml-5 "
+                  >
+                    Back
+                  </button>
+                  <h1 className=" text-gray-900 text-2xl font-semibold ml-auto">
+                    My Chats
+                  </h1>
+                </div>
               </div>
             </div>
             <div className="h-80 overflow-y-auto">
