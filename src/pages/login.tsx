@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { Router, useRouter } from "next/router";
 import React, { SyntheticEvent } from "react";
 import axios from "./api/axios";
 function Login() {
@@ -22,10 +22,7 @@ function Login() {
   return (
     <div className="flex flex-col">
       <div className="flex flex-row relative h-14 bg-gradient-to-r from-sky-300 to-rose-300 shadow-lg items-center ">
-        <button className="bg-white text-gray-900 rounded-md px-11 py-1 ml-auto text-xl mr-2">
-          Login
-        </button>
-        <button className="bg-white text-gray-900 rounded-md px-8 py-1 text-xl mr-2">
+        <button onClick={() => router.push("/register")} className="bg-white text-gray-900 rounded-md px-8 py-1 text-xl ml-auto mr-2">
           Register
         </button>
       </div>

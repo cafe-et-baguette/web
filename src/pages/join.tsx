@@ -27,15 +27,31 @@ function Join() {
   };
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>();
   const [users, setUsers] = useState<user[]>();
+  const [name, setName] = useState<string>();
   useEffect(() => {
     const fetchChats = async () => {
       const chatRoomsResult = await axios.get("/chatroom")
       setChatRooms(chatRoomsResult.data);
       const usersResult = await axios.get("/auth/users")
       setUsers(usersResult.data)
+      const userResult = await axios.get("/auth/user")
+      setName(userResult.data.name)
     }
     fetchChats()
   }, []);
+
+  const handleCreate = async (emails: string[], name:string) => {
+    try {
+      const res = await axios.post("/chatroom/create", {
+        name,
+        emails,
+      });
+      router.push(`/chatroom/${res.data._id}`)
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="flex flex-col ">
       <div className="flex flex-row relative h-14 bg-gradient-to-r from-sky-300 to-rose-300 shadow-lg items-center ">
@@ -79,7 +95,7 @@ function Join() {
               {users && users.map((user) => (
                 <>
                   <div className="flex flex-row items-center bg-white sm:px-5 py-3 space-y-3 m-1">{user.name}
-                    <button key={user._id} onClick={() => router.push(`/chatroom/${user._id}`)}
+                    <button key={user.email} onClick={() => handleCreate([user.email],`${name} and ${user.name} room`)}
                       className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-8 py-1 ml-auto">
                       Chat &gt;
                     </button>

@@ -28,11 +28,8 @@ function Register() {
   return (
     <div className="flex flex-col">
       <div className="flex flex-row relative h-14 bg-gradient-to-r from-sky-300 to-rose-300 shadow-lg items-center ">
-        <button className="bg-white text-gray-900 rounded-md px-11 py-1 ml-auto text-xl mr-2">
+        <button onClick={() => router.push("/login")} className="bg-white text-gray-900 rounded-md px-11 py-1 ml-auto text-xl mr-2">
           Login
-        </button>
-        <button className="bg-white text-gray-900 rounded-md px-8 py-1 text-xl mr-2">
-          Register
         </button>
       </div>
       <div className="relative py-3 sm:max-w-xl sm:mx-auto mt-36">
