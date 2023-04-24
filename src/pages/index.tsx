@@ -15,5 +15,5 @@ export default function Home() {
     })();
   }, [router]);
 
-  return <div>Home</div>;
+  return <div></div>;
 }
