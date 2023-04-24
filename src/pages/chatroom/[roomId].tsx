@@ -17,6 +17,13 @@ export type Message = {
   createdDate?: Date;
 };
 
+interface ChatRoom {
+  _id: string;
+  name: string;
+  userIds: string[];
+  messages: any[]; // update this with the type for your messages
+}
+
 const ChatRoom = () => {
   // Details to send
   const router = useRouter();
@@ -29,6 +36,8 @@ const ChatRoom = () => {
   const userId = auth?._id;
 
   const [content, setContent] = useState<string>("");
+
+  const [room, setRoom] = useState<ChatRoom>();
 
   const [users, setUsers] = useState<User[]>([]);
 
@@ -72,6 +81,10 @@ const ChatRoom = () => {
           });
         });
 
+      axios.get(`${BACKEND_URL}/chatroom/${roomId}`).then(({ data }) => {
+        setRoom(data as ChatRoom);
+      });
+
       axios.get(`${BACKEND_URL}/chatroom/${roomId}/users`).then(({ data }) => {
         setUsers(data.map((user: User) => user as User));
       });
@@ -109,30 +122,37 @@ const ChatRoom = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-sky-300 to-rose-300 py-3 flex flex-col justify-center">
-      {/* <div className="absolute inset-0 bg-gradient-to-r from-sky-300 to-rose-300 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-3 sm:rounded-2xl"></div> */}
       <div className="relative px-4 bg-white shadow-lg sm:rounded-3xl sm:p-10 ">
         <div className="flex flex-col w-auto">
           <div className="text-center">
             <div className="flex flex-row ">
               <div className="w-1/12">
-                <button className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-8 py-1">
+                <button
+                  className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-8 py-1"
+                  onClick={() => router.back()}
+                >
                   Back
                 </button>
               </div>
               <div className="w-10/12 ">
                 <h1 className=" text-gray-900 text-2xl font-semibold">
-                  Chat Room
+                  {room?.name}
                 </h1>
               </div>
               <div className="w-1/12">
-                <button onClick={()=>{router.push("/search")}} className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-8 py-1">
+                <button
+                  onClick={() => {
+                    router.push("/search");
+                  }}
+                  className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-8 py-1"
+                >
                   Search
                 </button>
               </div>
             </div>
-            <h1 className=" text-gray-900 text-sm font-semibold w-auto">
+            {/* <h1 className=" text-gray-900 text-sm font-semibold w-auto">
               Room ID: xxxxx
-            </h1>
+            </h1> */}
           </div>
           <div className="flex flex-row w-auto">
             <div className="w-full h-full">
