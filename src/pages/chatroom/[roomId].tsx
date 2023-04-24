@@ -142,7 +142,7 @@ const ChatRoom = () => {
               <div className="w-1/12">
                 <button
                   onClick={() => {
-                    router.push("/search");
+                    router.push(`/search/${roomId}`);
                   }}
                   className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-8 py-1"
                 >
