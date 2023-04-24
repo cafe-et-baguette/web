@@ -81,7 +81,7 @@ const ChatRoom = () => {
           });
         });
 
-      axios.get(`${BACKEND_URL}/chatroom/${roomId}`).then(({ data }) => {
+      axios.get(`${BACKEND_URL}/chatroom/id/${roomId}`).then(({ data }) => {
         setRoom(data as ChatRoom);
       });
 
