@@ -26,12 +26,12 @@ function Join() {
     }
   };
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>();
-  const [users, setUsers] = useState<user>();
+  const [users, setUsers] = useState<user[]>();
   useEffect(() => {
     const fetchChats = async () => {
       const chatRoomsResult = await axios.get("/chatroom")
       setChatRooms(chatRoomsResult.data);
-      const usersResult = await axios.get("/auth/user")
+      const usersResult = await axios.get("/auth/users")
       setUsers(usersResult.data)
     }
     fetchChats()
@@ -53,12 +53,8 @@ function Join() {
       <div className="flex flex-row w-auto mt-32 mb-32">
         <div className="w-full h-full m-4">
           <div className="bg-gray-200 sm:rounded-2xl sm:px-5 py-3 h-96 divide-y-2 divide-gray-400">
-            <div>
-              <div className="text-center">
-                <h1 className=" text-gray-900 text-2xl font-semibold">
-                  Groups
-                </h1>
-              </div>
+            <div className="text-center">
+              <h1 className=" text-gray-900 text-2xl font-semibold"> Groups </h1>
             </div>
             <div className="h-80 overflow-y-auto">
               {chatRooms && chatRooms.map((chatRoom) => (
@@ -76,10 +72,20 @@ function Join() {
         </div>
         <div className="w-full h-full m-4">
           <div className="bg-gray-200 sm:rounded-2xl sm:px-5 py-3 h-96 divide-y-2 divide-gray-400">
-            <div>
-              <div className="text-center">
-                <h1 className=" text-gray-900 text-2xl font-semibold">Chats</h1>
-              </div>
+            <div className="text-center">
+              <h1 className=" text-gray-900 text-2xl font-semibold">Chats</h1>
+            </div>
+            <div className="h-80 overflow-y-auto">
+              {users && users.map((user) => (
+                <>
+                  <div className="flex flex-row items-center bg-white sm:px-5 py-3 space-y-3 m-1">{user.name}
+                    <button key={user._id} onClick={() => router.push(`/chatroom/${user._id}`)}
+                      className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-8 py-1 ml-auto">
+                      Chat &gt;
+                    </button>
+                  </div>
+                </>
+              ))}
             </div>
           </div>
         </div>
