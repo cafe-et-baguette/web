@@ -19,7 +19,7 @@ function Join() {
   const handleLogout = async (e: SyntheticEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.post("/auth/logout");
+      await axios.post("/auth/logout");
       router.push("/login");
     } catch (error) {
       console.log(error);
@@ -40,7 +40,7 @@ function Join() {
     fetchChats()
   }, []);
 
-  const handleCreate = async (emails: string[], name:string) => {
+  const handleCreate = async (emails: string[], name: string) => {
     try {
       const res = await axios.post("/chatroom/create", {
         name,
@@ -55,8 +55,8 @@ function Join() {
   return (
     <div className="flex flex-col ">
       <div className="flex flex-row relative h-14 bg-gradient-to-r from-sky-300 to-rose-300 shadow-lg items-center ">
-        <h1 className="text-gray-900 text-2xl font-semibold p-2">Nickname</h1>
-        <button className=" text-gray-600 rounded-md ml-1 text-base">
+        <h1 className="text-gray-900 text-2xl font-semibold p-2">{name}</h1>
+        <button onClick={() => router.push("/rename")} className=" text-gray-600 rounded-md ml-1 text-base">
           Edit
         </button>
         <button className="bg-white text-gray-900 rounded-md px-8 py-1 text-xl ml-auto mr-3" onClick={() => router.push("/groups")}>
@@ -95,7 +95,7 @@ function Join() {
               {users && users.map((user) => (
                 <>
                   <div className="flex flex-row items-center bg-white sm:px-5 py-3 space-y-3 m-1">{user.name}
-                    <button key={user.email} onClick={() => handleCreate([user.email],`${name} and ${user.name} room`)}
+                    <button key={user.email} onClick={() => handleCreate([user.email], `${name} and ${user.name} room`)}
                       className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-8 py-1 ml-auto">
                       Chat &gt;
                     </button>
