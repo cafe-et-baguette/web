@@ -52,6 +52,19 @@ function Join() {
     }
   };
 
+  const handleJoin = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    chatRoom: ChatRoom
+  ) => {
+    axios
+      .post("/chatroom/join", {
+        roomId: chatRoom._id,
+      })
+      .then(() => {
+        router.push(`/chatroom/${chatRoom._id}`);
+      });
+  };
+
   return (
     <div className="flex flex-col ">
       <div className="flex flex-row relative h-14 bg-gradient-to-r from-sky-300 to-rose-300 shadow-lg items-center ">
@@ -92,7 +105,7 @@ function Join() {
                       {chatRoom.name}
                       <button
                         key={chatRoom._id}
-                        onClick={() => router.push(`/chatroom/${chatRoom._id}`)}
+                        onClick={(e) => handleJoin(e, chatRoom)}
                         className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-8 py-1 ml-auto"
                       >
                         Chat &gt;
