@@ -6,7 +6,10 @@ function Search() {
       <div className="relative px-4 bg-white shadow-lg sm:rounded-3xl sm:p-10 ">
         <div className="text-center">
           <div className="flex flex-row w-1/2">
-            <button onClick={() => router.back()} className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-10 py-1 ml-5 ">
+            <button
+              onClick={() => router.back()}
+              className="bg-gradient-to-r from-sky-300 to-rose-300 text-gray-900 rounded-md px-10 py-1 ml-5 "
+            >
               Back
             </button>
             <h1 className=" text-gray-900 text-2xl font-semibold ml-auto">
@@ -50,11 +53,3 @@ function Search() {
   );
 }
 export default Search;
-function useState<T>(): [any, any] {
-  throw new Error("Function not implemented.");
-}
-
-function useEffect(arg0: () => void, arg1: never[]) {
-  throw new Error("Function not implemented.");
-}
-
