@@ -4,6 +4,7 @@ import axios from '../api/axios';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { Socket, io } from 'socket.io-client';
+import { DefaultEventsMap } from '@socket.io/component-emitter';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 	? process.env.NEXT_PUBLIC_BACKEND_URL
@@ -26,48 +27,39 @@ interface ChatRoom {
 
 const ChatRoom = () => {
 	// Details to send
+
 	const router = useRouter();
-
 	const { auth, setAuth } = useAuth();
-
 	const roomId =
 		typeof router.query.roomId === 'string' ? router.query.roomId : '';
-
 	const userId = auth?._id;
-
 	const [content, setContent] = useState<string>('');
-
 	const [room, setRoom] = useState<ChatRoom>();
-
 	const [users, setUsers] = useState<User[]>([]);
-
-	// Messages
 	const [messages, setMessages] = useState<Message[]>([]);
+	const [socket, setSocket] = useState<Socket<
+		DefaultEventsMap,
+		DefaultEventsMap
+	> | null>(null);
 
 	// Scroll to bottom
 	const messageEnd = useRef<null | HTMLDivElement>(null);
+
 	const scrollToBottom = () => {
 		messageEnd.current?.scrollIntoView({ behavior: 'smooth' });
 	};
 	useEffect(scrollToBottom, [messages]);
 
-	const connectSocket = () => {
-		socket = io(BACKEND_URL);
-		socket.on('connect', () => console.log(`Connected to ${BACKEND_URL}`));
-	};
-
 	useEffect(() => {
 		const fetchUser = async () => {
 			try {
 				const response = await axios.get('/auth/user');
-
 				const data = response.data;
 				setAuth({
 					_id: data._id,
 					name: data.name,
 					email: data.email,
 				});
-				console.log(data);
 			} catch (error) {
 				router.push('/login');
 				console.error(error);
@@ -76,92 +68,80 @@ const ChatRoom = () => {
 		fetchUser();
 	}, [router, setAuth]);
 
-	// Socket connection when first page load
-	useEffect(() => {
-		if (!auth) {
-			return;
-		}
-		connectSocket();
-	}, [auth]);
-
-	// Handle messaging
-	useEffect(() => {
-		if (!auth) {
-			return;
-		}
-		if (roomId) {
-			// Get previous messages
-
-			axios
-				.get(`${BACKEND_URL}/chatroom/${roomId}/messages`)
-				.then(({ data }) => {
-					const previousMessages = data.map(
-						(messageResponse: any) => {
-							return userFromId(messageResponse.userId).then(
-								(user) => {
-									return {
-										user: user as User,
-										roomId: messageResponse.roomId,
-										content: messageResponse.content,
-										createdDate: new Date(
-											messageResponse.createdDate
-										),
-									} as Message;
-								}
-							);
-						}
-					);
-					Promise.all(previousMessages).then((previousMessages) => {
-						setMessages(previousMessages);
-					});
-				});
-
-			axios
-				.get(`${BACKEND_URL}/chatroom/id/${roomId}`)
-				.then(({ data }) => {
-					setRoom(data as ChatRoom);
-				});
-
-			axios
-				.get(`${BACKEND_URL}/chatroom/${roomId}/users`)
-				.then(({ data }) => {
-					setUsers(data.map((user: User) => user as User));
-				});
-
-			while (!socket) {
-				connectSocket();
-			} // TODO: Refactor this?
-
-			// On broadcast add message to message list
-			socket.on('broadcast', (receivedMessage: any) => {
-				if (receivedMessage.roomId === roomId) {
-					setMessages(
-						messages.concat({
-							user: receivedMessage.userId as User,
+	const connectSocket = () => {
+		const newSocket = io(BACKEND_URL);
+		newSocket.on('connect', () =>
+			console.log(`Connected to ${BACKEND_URL}`)
+		);
+		newSocket.on('broadcast', (receivedMessage: any) => {
+			if (receivedMessage.roomId === roomId) {
+				userFromId(receivedMessage.userId).then((user) => {
+					setMessages((previousMessages) => [
+						...previousMessages,
+						{
+							user,
 							roomId: receivedMessage.roomId,
 							content: receivedMessage.content,
 							createdDate: new Date(receivedMessage.createdDate),
-						} as Message)
-					);
-				}
+						},
+					]);
+				});
+			}
+		});
+		return newSocket;
+	};
+
+	useEffect(() => {
+		let newSocket: any;
+		if (auth) {
+			newSocket = connectSocket();
+			setSocket(newSocket);
+		}
+
+		return () => {
+			newSocket?.off('broadcast');
+			newSocket?.off('connect');
+			newSocket?.disconnect();
+		};
+	}, [auth, roomId]);
+
+	useEffect(() => {
+		if (roomId) {
+			axios.get(`/chatroom/id/${roomId}`).then(({ data }) => {
+				setRoom(data as ChatRoom);
+			});
+			axios.get(`/chatroom/${roomId}/users`).then(({ data }) => {
+				setUsers(data as User[]);
+			});
+			axios.get(`/chatroom/${roomId}/messages`).then(async ({ data }) => {
+				const previousMessages = await Promise.all(
+					data.map(async (messageResponse: any) => {
+						const user = await userFromId(messageResponse.userId);
+						return {
+							user,
+							roomId: messageResponse.roomId,
+							content: messageResponse.content,
+							createdDate: new Date(messageResponse.createdDate),
+						} as Message;
+					})
+				);
+				setMessages(previousMessages);
 			});
 		}
-	}, [auth, messages, roomId]);
+	}, [roomId]);
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const messageToSend = {
-			roomId: roomId,
-			userId: userId,
-			content: content,
-		};
-		setContent('');
-		socket.emit('send', messageToSend);
+		if (socket) {
+			const messageToSend = {
+				roomId: roomId,
+				userId: userId,
+				content: content,
+			};
+			setContent('');
+			socket.emit('send', messageToSend);
+		}
 	};
-
-	if (!auth) {
-		return <div>go back to login</div>;
-	}
 
 	return (
 		<div className="min-h-screen bg-gradient-to-r from-sky-300 to-rose-300 py-3 flex flex-col justify-center">
@@ -193,9 +173,6 @@ const ChatRoom = () => {
 								</button>
 							</div>
 						</div>
-						{/* <h1 className=" text-gray-900 text-sm font-semibold w-auto">
-              Room ID: xxxxx
-            </h1> */}
 					</div>
 					<div className="flex flex-row w-auto">
 						<div className="w-full h-full">
@@ -260,7 +237,6 @@ const ChatRoom = () => {
 										key={user._id}
 										className="flex flex-row bg-gray-300 mt-1 p-2"
 									>
-										{/* <div className="rounded-full bg-pink-300 w-3 h-3 m-2"></div> */}
 										{user.name}&lt;{user.email}&gt;
 									</div>
 								);
