@@ -26,24 +26,6 @@ function AuthContextProvider({ children }: { children: React.ReactNode }) {
 		email: string;
 	} | null>(null);
 
-	useEffect(() => {
-		(async () => {
-			try {
-				const response = await axios.get('/auth/user');
-
-				const data = response.data;
-				setAuth({
-					_id: data._id,
-					name: data.name,
-					email: data.email,
-				});
-				console.log(data);
-			} catch (error) {
-				console.error(error);
-			}
-		})();
-	}, []);
-
 	return (
 		<AuthContext.Provider value={{ auth, setAuth }}>
 			{children}
