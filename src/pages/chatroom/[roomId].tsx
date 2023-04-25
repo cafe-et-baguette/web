@@ -68,34 +68,41 @@ const ChatRoom = () => {
 		fetchUser();
 	}, [router, setAuth]);
 
-	useEffect(() => {
-		if (auth) {
-			const connectSocket = () => {
-				const newSocket = io(BACKEND_URL);
-				newSocket.on('connect', () =>
-					console.log(`Connected to ${BACKEND_URL}`)
-				);
-				newSocket.on('broadcast', (receivedMessage: any) => {
-					if (receivedMessage.roomId === roomId) {
-						userFromId(receivedMessage.userId).then((user) => {
-							setMessages((previousMessages) => [
-								...previousMessages,
-								{
-									user,
-									roomId: receivedMessage.roomId,
-									content: receivedMessage.content,
-									createdDate: new Date(
-										receivedMessage.createdDate
-									),
-								},
-							]);
-						});
-					}
+	const connectSocket = () => {
+		const newSocket = io(BACKEND_URL);
+		newSocket.on('connect', () =>
+			console.log(`Connected to ${BACKEND_URL}`)
+		);
+		newSocket.on('broadcast', (receivedMessage: any) => {
+			if (receivedMessage.roomId === roomId) {
+				userFromId(receivedMessage.userId).then((user) => {
+					setMessages((previousMessages) => [
+						...previousMessages,
+						{
+							user,
+							roomId: receivedMessage.roomId,
+							content: receivedMessage.content,
+							createdDate: new Date(receivedMessage.createdDate),
+						},
+					]);
 				});
-				setSocket(newSocket);
-			};
-			connectSocket();
+			}
+		});
+		return newSocket;
+	};
+
+	useEffect(() => {
+		let newSocket: any;
+		if (auth) {
+			newSocket = connectSocket();
+			setSocket(newSocket);
 		}
+
+		return () => {
+			newSocket?.off('broadcast');
+			newSocket?.off('connect');
+			newSocket?.disconnect();
+		};
 	}, [auth, roomId]);
 
 	useEffect(() => {
